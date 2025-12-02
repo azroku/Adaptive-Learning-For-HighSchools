@@ -19,7 +19,7 @@ Even with a single student's data, BKT allows us to visualize **how mastery of d
 
 ## 🗂 Repository Structure
 
-Adaptive-Learning-For-HighSchools/
+'''Adaptive-Learning-For-HighSchools/
 │
 ├── Code/                  # All code files (scripts, notebooks)
 │
@@ -37,4 +37,4 @@ Adaptive-Learning-For-HighSchools/
 ├── Presentations/         # Optional: slides for progress reviews
 │   └── project_slides.pdf
 │
-└── requirements.txt       # Python dependencies
+└── requirements.txt       # Python dependencies'''
