@@ -19,7 +19,6 @@ The project was developed as an **academic demo**, but its architecture is inten
 - [Design Decisions](#design-decisions)
 - [Current Limitations](#current-limitations)
 - [Planned Improvements](#planned-improvements)
-- [Contributing](#contributing)
 
 ---
 
