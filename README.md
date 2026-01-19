@@ -83,6 +83,7 @@ uchko/
 ├── data/
 │   ├── content/               # skills.json, templates.json
 │   ├── cache/                 # events.parquet, users.json, session history
+│   ├── prod_event_logs.csv    # user data
 │   └── edm_cup_2023/          # (training only)
 │
 ├── models/
