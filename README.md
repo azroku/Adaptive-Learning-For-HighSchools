@@ -68,12 +68,17 @@ uchko/
 │   ├── risk/                  # Risk features, ML scoring, guards
 │   ├── adaptive/              # Risk-aware adaptive policy
 │   ├── users.py               # Lightweight user accounts
+│   ├── analytics/             # Session summary
+│   ├── llm/                   # Inclusion of Large Language Models (LLM)
 │   └── viz/                   # Curriculum graph visualization
 │
 ├── scripts/
 │   ├── train_risk_model_edm_gbm.py
-│   ├── sanity_check_features_edm_vs_prod.py
+│   ├── pregen_llm_cache.py
 │   └── fit_bkt_params.py
+│
+├── tests/
+│   └── test_generator.py
 │
 ├── data/
 │   ├── content/               # skills.json, templates.json
@@ -81,6 +86,7 @@ uchko/
 │   └── edm_cup_2023/          # (training only)
 │
 ├── models/
+│   ├── bkt_params.json
 │   └── edm_risk_gbm/
 │       ├── risk_model.joblib
 │       ├── feature_spec.json
