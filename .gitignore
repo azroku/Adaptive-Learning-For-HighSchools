@@ -1,0 +1,21 @@
+# Common Python ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.*
+.venv/
+.idea/
+.vscode/
+
+# Large files
+data/cache/
+*.parquet
+*.jsonl
+models/*
+!models/model_config.yaml  # keep config if needed
+
+# Other
+.DS_Store
+*.log
