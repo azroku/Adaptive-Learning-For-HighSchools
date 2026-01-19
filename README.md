@@ -257,7 +257,6 @@ The system is fully functional offline.
 ## Current Limitations
 
 - Small, manually defined skill ontology  
-- Classical BKT baseline only  
 - Risk model trained on external dataset  
 - UI prioritizes clarity over polish  
 
@@ -273,12 +272,6 @@ The system is fully functional offline.
 
 ---
 
-## Contributing
 
 This project is currently an **academic prototype**.
 
-Contributions are welcome in the form of:
-- Code improvements  
-- Model experimentation  
-- UI enhancements  
-- Documentation updates  
