@@ -10,7 +10,7 @@ The project was developed as an **academic demo**, but its architecture is inten
 ## Table of Contents
 
 - [Project Overview](#project-overview)
-- [System Architecture](#system-architecture)
+- [Repository Structure](#repository-structure)
 - [Core Components](#core-components)
 - [Models Used](#models-used)
 - [Installation](#installation)
@@ -19,6 +19,7 @@ The project was developed as an **academic demo**, but its architecture is inten
 - [Design Decisions](#design-decisions)
 - [Current Limitations](#current-limitations)
 - [Planned Improvements](#planned-improvements)
+- [Authors](#authors)
 
 ---
 
@@ -50,9 +51,7 @@ Uchko addresses these issues by being:
 
 ---
 
-## System Architecture
-
-The platform is composed of **loosely coupled, inspectable modules**:
+## Repository Structure
 
 ```text
 uchko/
@@ -67,26 +66,19 @@ uchko/
 │   ├── risk/                  # Risk features, ML scoring, guards
 │   ├── adaptive/              # Risk-aware adaptive policy
 │   ├── users.py               # Lightweight user accounts
-│   ├── analytics/             # Session summary
-│   ├── llm/                   # Inclusion of Large Language Models (LLM)
 │   └── viz/                   # Curriculum graph visualization
 │
 ├── scripts/
 │   ├── train_risk_model_edm_gbm.py
-│   ├── pregen_llm_cache.py
+│   ├── sanity_check_features_edm_vs_prod.py
 │   └── fit_bkt_params.py
-│
-├── tests/
-│   └── test_generator.py
 │
 ├── data/
 │   ├── content/               # skills.json, templates.json
 │   ├── cache/                 # events.parquet, users.json, session history
-│   ├── prod_event_logs.csv    # user data
 │   └── edm_cup_2023/          # (training only)
 │
 ├── models/
-│   ├── bkt_params.json
 │   └── edm_risk_gbm/
 │       ├── risk_model.joblib
 │       ├── feature_spec.json
@@ -204,6 +196,14 @@ Parameters can be fitted via **maximum likelihood** on logged student events.
 ```bash
 python -m pip install -r requirements.txt
 ```
+## Usage
+
+To run the app locally:
+
+```bash
+python -m streamlit run app/streamlit_app.py
+```
+
 ## Typical User Flow
 
 1. Create or select a user  
@@ -256,6 +256,7 @@ The system is fully functional offline.
 ## Current Limitations
 
 - Small, manually defined skill ontology  
+- Classical BKT baseline only  
 - Risk model trained on external dataset  
 - UI prioritizes clarity over polish  
 
@@ -271,6 +272,7 @@ The system is fully functional offline.
 
 ---
 
+## Authors
 
 This project is currently an **academic prototype**.
-
+Developed by Azra and Tarik.  
