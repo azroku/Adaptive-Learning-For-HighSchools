@@ -5,6 +5,17 @@ import time
 import uuid
 from dataclasses import asdict
 from pathlib import Path
+import sys
+# Paths / config
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+EVENTS_PATH = ROOT / "data" / "cache" / "events.parquet"
+USERS_PATH = ROOT / "data" / "cache" / "users.json"
+SKILLS_PATH = ROOT / "data" / "content" / "skills.json"
+TEMPLATES_PATH = ROOT / "data" / "content" / "templates.json"
+SESSION_SUMMARIES_PATH = ROOT / "data" / "cache" / "session_summaries.parquet"
+
 from typing import Optional
 import pandas as pd
 import streamlit as st
@@ -45,15 +56,6 @@ try:
     from uchko_core.llm import enhance as llm_enh
 except Exception:
     llm_enh = None
-
-
-# Paths / config
-ROOT = Path(__file__).resolve().parents[1]
-EVENTS_PATH = ROOT / "data" / "cache" / "events.parquet"
-USERS_PATH = ROOT / "data" / "cache" / "users.json"
-SKILLS_PATH = ROOT / "data" / "content" / "skills.json"
-TEMPLATES_PATH = ROOT / "data" / "content" / "templates.json"
-SESSION_SUMMARIES_PATH = ROOT / "data" / "cache" / "session_summaries.parquet"
 
 GOAL_MASTERY_THRESHOLD = 0.80
 MIN_SOLVES_FOR_RISK = 5
