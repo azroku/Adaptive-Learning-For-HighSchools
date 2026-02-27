@@ -5,7 +5,7 @@ import os
 
 @dataclass
 class LLMConfig:
-    provider: str  # "none" | "openai" | "gemini"
+    provider: str  # "none" | "openai" | "groq"
     model: str
     api_key: Optional[str]
     enabled: bool
@@ -20,9 +20,9 @@ def load_llm_config() -> LLMConfig:
         api_key = os.getenv("OPENAI_API_KEY")
         if not model:
             model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-    elif provider == "gemini":
-        api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    elif provider == "groq":
+        api_key = os.getenv("GROQ_API_KEY")
         if not model:
-            model = os.getenv("GEMINI_MODEL", "models/gemini-2.0-flash")
+            model = os.getenv("GROQ_MODEL", "llama3-8b-8192")
 
     return LLMConfig(provider=provider, model=model, api_key=api_key, enabled=enabled)

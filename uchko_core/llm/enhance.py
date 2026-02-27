@@ -8,7 +8,7 @@ from .config import load_llm_config
 
 import time as _time
 
-COOLDOWN_UNTIL_TS = 0.0  # epoch seconds; if now < this => don't call Gemini
+COOLDOWN_UNTIL_TS = 0.0  # epoch seconds; if now < this => don't call Groq
 
 
 LAST_LLM_STATUS = "not called"
@@ -34,41 +34,49 @@ def _safe_json_loads(text: str) -> Optional[dict]:
         return None
 
 
-def _gemini_generate_json(*, api_key: str, model: str, system: str, user: str) -> Optional[dict]:
+def _groq_generate_json(*, api_key: str, model: str, system: str, user: str) -> Optional[dict]:
     global LAST_LLM_STATUS
     try:
-        import google.generativeai as genai
+        from groq import Groq
     except Exception as e:
-        LAST_LLM_STATUS = f"Gemini package missing: {e}"
+        LAST_LLM_STATUS = f"Groq package missing: {e}"
         return None
 
     try:
-        genai.configure(api_key=api_key)
-        m = genai.GenerativeModel(model)
-        prompt = f"{system}\n\n{user}\n\nReturn ONLY valid JSON. No markdown."
-        r = m.generate_content(prompt)
-        txt = getattr(r, "text", None)
+        client = Groq(api_key=api_key)
+        # Strong instruction: ONLY JSON
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": f"{user}\n\nReturn ONLY valid JSON. No markdown."},
+        ]
+        resp = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            temperature=0.2,
+        )
+        txt = resp.choices[0].message.content if resp and resp.choices else None
         if not txt:
-            LAST_LLM_STATUS = "Gemini returned empty text"
+            LAST_LLM_STATUS = "Groq returned empty text"
             return None
+
         parsed = _safe_json_loads(txt)
         if parsed is None:
-            LAST_LLM_STATUS = "Gemini response not valid JSON (parse failed)"
+            LAST_LLM_STATUS = "Groq response not valid JSON (parse failed)"
             return None
         return parsed
+
     except Exception as e:
         msg = f"{type(e).__name__}: {e}"
 
-        # Rate limit detection (429 / ResourceExhausted)
-        if "429" in str(e) or "ResourceExhausted" in str(e):
+        # Rate limit detection (429)
+        if "429" in str(e):
             global COOLDOWN_UNTIL_TS
             COOLDOWN_UNTIL_TS = _time.time() + 10 * 60  # 10 minutes
-            LAST_LLM_STATUS = "Gemini rate-limited (429). Cooling down for 10 minutes."
+            LAST_LLM_STATUS = "Groq rate-limited (429). Cooling down for 10 minutes."
             return None
 
-        LAST_LLM_STATUS = f"Gemini call failed: {msg}"
+        LAST_LLM_STATUS = f"Groq call failed: {msg}"
         return None
-
 
 
 def enhance_question_with_llm(
@@ -88,13 +96,13 @@ def enhance_question_with_llm(
       - explanation (string) optional
     """
     global LAST_LLM_STATUS
-
+    
     cfg = load_llm_config()
-    if not cfg.enabled or cfg.provider != "gemini":
-        LAST_LLM_STATUS = "LLM disabled or provider not gemini"
+    if not cfg.enabled or cfg.provider != "groq":
+        LAST_LLM_STATUS = "LLM disabled or provider not groq"
         return None
     if not cfg.api_key:
-        LAST_LLM_STATUS = "Missing GEMINI_API_KEY/GOOGLE_API_KEY"
+        LAST_LLM_STATUS = "Missing GROQ_API_KEY"
         return None
     
     # Cooldown gate (avoid repeated 429 spam)
@@ -102,7 +110,7 @@ def enhance_question_with_llm(
     now = _time.time()
     if now < COOLDOWN_UNTIL_TS:
         remaining = int(COOLDOWN_UNTIL_TS - now)
-        LAST_LLM_STATUS = f"Gemini cooldown active ({remaining}s remaining)"
+        LAST_LLM_STATUS = f"Groq cooldown active ({remaining}s remaining)"
         return None
 
 
@@ -127,7 +135,7 @@ def enhance_question_with_llm(
         "Rewrite the question clearly and generate multiple-choice distractors.\n"
         "CRITICAL: exactly one option must equal the provided correct answer.\n"
         "Also produce a short hint and short explanation.\n"
-        "Start rewritten_prompt with the prefix: [Uchko-Gemini] "
+        "Start rewritten_prompt with the prefix: [Uchko-Groq] "
     )
 
     user = (
@@ -143,12 +151,12 @@ def enhance_question_with_llm(
         "If you cannot generate 4 good choices, return rewritten_prompt only."
     )
 
-    out = _gemini_generate_json(api_key=cfg.api_key, model=cfg.model, system=system, user=user)
+    out = _groq_generate_json(api_key=cfg.api_key, model=cfg.model, system=system, user=user)
     if not isinstance(out, dict):
         # LAST_LLM_STATUS already set
         return None
 
-    # --- normalize keys (Gemini sometimes uses different ones) ---
+    # --- normalize keys (groq sometimes uses different ones) ---
     rewritten = out.get("rewritten_prompt") or out.get("prompt") or out.get("question")
     hint = out.get("hint")
     explanation = out.get("explanation") or out.get("solution")
@@ -175,9 +183,9 @@ def enhance_question_with_llm(
         norm["choices"] = choices4
 
     if not norm:
-        LAST_LLM_STATUS = "Gemini returned JSON but with no usable fields"
+        LAST_LLM_STATUS = "Groq returned JSON but with no usable fields"
         return None
 
     cache_put(cache_path, payload, norm)
-    LAST_LLM_STATUS = "OK (Gemini enhancement applied)"
+    LAST_LLM_STATUS = "OK (Groq enhancement applied)"
     return norm

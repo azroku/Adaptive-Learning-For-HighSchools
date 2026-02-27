@@ -695,7 +695,7 @@ with tab_practice:
     )
 
     if bool(st.session_state.llm_used):
-        st.caption("✨ Enhanced by Gemini")
+        st.caption("✨ Enhanced by Groq")
     else:
         st.caption("🧩 Template question (stable demo mode)")
 
@@ -962,9 +962,9 @@ with tab_settings:
     with st.expander("LLM debug (optional)", expanded=False):
         st.caption("LLM is OFF by default for demo stability.")
 
-        use_llm_setting = st.toggle("Use Gemini enhancements", value=bool(st.session_state.use_llm), key="use_llm_setting")
+        use_llm_setting = st.toggle("Use Groq enhancements", value=bool(st.session_state.use_llm), key="use_llm_setting")
         max_llm_calls_setting = st.slider(
-            "Max Gemini calls this session", 0, 10, int(st.session_state.max_llm_calls), key="max_llm_calls_setting"
+            "Max Groq calls this session", 0, 10, int(st.session_state.max_llm_calls), key="max_llm_calls_setting"
         )
 
         #updating non-widget state
@@ -974,7 +974,7 @@ with tab_settings:
         st.write("UCHKO_LLM_ENABLED:", os.getenv("UCHKO_LLM_ENABLED"))
         st.write("UCHKO_LLM_PROVIDER:", os.getenv("UCHKO_LLM_PROVIDER"))
         st.write("UCHKO_LLM_MODEL:", os.getenv("UCHKO_LLM_MODEL"))
-        st.write("GEMINI_API_KEY set:", bool(os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")))
+        st.write("GROQ_API_KEY set:", bool(os.getenv("GROQ_API_KEY")))
         st.write("Last LLM status:", getattr(llm_enh, "LAST_LLM_STATUS", "unknown") if llm_enh else "llm module not available")
         st.write(f"Calls used: {st.session_state.llm_calls_used}/{st.session_state.max_llm_calls}")
 
